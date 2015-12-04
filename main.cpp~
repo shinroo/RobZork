@@ -1,0 +1,253 @@
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <ctype.h>
+
+using namespace std;
+
+/*##########################################################################################################################*/
+
+//Global variables:
+
+//location variables
+int PosX;
+int PosY;
+
+//boolean variables
+bool InCombat;
+
+//string variables
+string Monster;
+
+//world array
+string World[50][50];
+
+//array holding types of terrains
+string Terrain[5] = {
+                   "You are in a forest. \n",
+                   "You are near a stream. \n",
+                   "You are on a hill. \n",
+                   "You are in a field. \n",
+                   "You are in a valley. \n",
+       };
+
+/*##########################################################################################################################*/
+
+//function to validate input
+bool validate(string input){
+                     if (input.find(" ") == string::npos){
+                                      return false;
+                                      }
+                     else{
+                                      return true;
+                          }
+     }
+/*##########################################################################################################################*/
+
+//Generating world function
+
+void GenerateWorld(){
+                     int x = 0;
+                     int y = 0;
+                     
+                     for (x = 0; x < 50; x++){ // for loop running through all x values
+                         
+                         for (y = 0; y < 50; y++){ // for loop running through all y values
+                             
+                             if ((x == 0) || (x == 49) || (y == 0) || (y == 49)){ 
+                                    World[x][y] = "You are on a beach. \n";
+                                    }
+                             else {
+                                  int random = rand() % 5; 
+                                  World[x][y] = Terrain[random]; //if the player is not on an edge, pick a random terrain type
+                                  }
+                                  
+                                    
+                             }
+                         } 
+                         return;    
+                         }
+                         
+/*##########################################################################################################################*/
+
+//function to check if there is a monster at your location
+
+void CheckMonster(){
+                    int choice = (rand() % 20) + 1;
+                    
+                    switch (choice){
+                           default: {
+                                    cout<<"The area seems to be empty. \n";
+                                    return;
+                                    }
+                           case 1: {
+                                cout<<"You come across a bandit! \n";
+                                InCombat = true;
+                                Monster = "bandit";
+                                return;
+                                }
+                           case 5: {
+                                cout<<"You come across a bandit! \n";
+                                InCombat = true;
+                                Monster = "bandit";
+                                return;
+                                }
+                           case 14: {
+                                cout<<"You come across a goblin! \n";
+                                InCombat = true;
+                                Monster = "goblin";
+                                return;
+                                }
+                           case 19: {
+                                cout<<"You come across a troll! \n";
+                                InCombat = true;
+                                Monster = "troll";
+                                return;
+                                }
+                           }
+     }
+/*##########################################################################################################################*/
+
+//function to interpret user input
+
+void Interpret(string one, string two){
+     
+     
+                      //convering parameters to lowercase
+                      int n; // counter variable
+                      char c; 
+                       for ( n=0 ; one[n]!='\0' ; n++)
+                       {
+                          c = one[n];
+                          one[n] = (tolower(c));
+                         
+                          }
+                      
+                      /* 
+                         For some reason if you were to use one[n] as a char in the tolower() function
+                         it does not work which is why I had to assign it to a char and then assign it
+                         back
+                      */
+                          
+                      for ( n=0 ; two[n]!='\0' ; n++)
+                       {
+                          c = two[n];
+                          two[n] = (tolower(c));
+                         
+                          }
+                      
+                     // if (InCombat == false){
+                                    
+                      //code for moving
+                      if ((one == "go") || (one == "move") || (one == "travel")){ //check whether the first word refers to movement
+                      
+                               //if the second word mentions north increment the Y position
+                                    if (two == "north"){
+                                            if  (PosY == 0){
+                                              cout<<"You can't go that way. \n";  
+                                                }
+                                            else{
+                                              cout<<"You travel north.\n";
+                                              PosY--;
+                                              cout << World[PosX][PosY] <<"\n";
+                                              CheckMonster();
+                                                 }
+                                              return;
+                                              }
+                               //if the second word mentions north decrement the Y position
+                                    if (two == "south"){
+                                            if  (PosY == 49){
+                                              cout<<"You can't go that way. \n";  
+                                                }
+                                            else{
+                                              cout<<"You travel south.\n";
+                                              PosY++;
+                                              cout << World[PosX][PosY] <<"\n";
+                                              CheckMonster();
+                                                 }
+                                              return;
+                                              }
+                               //if the second word mentions north increment the X position
+                                    if (two == "west"){
+                                            if  (PosX == 0){
+                                              cout<<"You can't go that way. \n";  
+                                                }
+                                            else{
+                                              cout<<"You travel west.\n";
+                                              PosX--;
+                                              cout << World[PosX][PosY] <<"\n";
+                                              CheckMonster();
+                                                 }
+                                              return;
+                                              }
+                                              
+                               //if the second word mentions north decrement the X position
+                                    if (two == "east"){
+                                            if  (PosX == 49){
+                                              cout<<"You can't go that way. \n";  
+                                                }
+                                            else{
+                                              cout<<"You travel east.\n";
+                                              PosX++;
+                                              cout << World[PosX][PosY] <<"\n";
+                                              CheckMonster();
+                                                 }
+                                              return;
+                                              }
+                                              
+                                    return;
+                                 } // end of movement
+                             //  }
+                            //   else{
+                                    // code for combat
+                             //       } // end of combat
+                             return;
+                      } // end of function
+
+     
+/*##########################################################################################################################*/
+
+int main(int argc, char *argv[])
+{
+    //initialize the position variables
+    PosX = 0;
+    PosY = 0;
+    
+    //initialize the boolean variables
+    InCombat = false;
+    
+    //create the string variables to hold user input
+    string One;
+    string Two;
+    
+    //Generate the world with GenerateWorld() function
+    GenerateWorld();
+    
+    cout << "\n Developed by Robert Focke - 2013 \n\n";
+
+    //introduce plot
+    cout << "You wake up on an island but you have no memory of how you got there.\n";
+    cout << "Find out why you are on this island all alone... what was that sound... \n";
+    
+    //Give the user their original position
+    cout << World[PosX][PosY] <<"\n";
+    
+    
+    //continuously get user input until the game is over
+    do{
+                    
+           cout << ">>";
+           cin >> One >> Two;
+           if ((validate(One) == false) || (validate(Two) == false)) {
+                        continue;
+                        }
+           else{
+                Interpret(One,Two);
+                cout << "\n";
+           }
+           
+           }while (1<2);
+           
+    system("PAUSE");
+    return EXIT_SUCCESS;
+}
